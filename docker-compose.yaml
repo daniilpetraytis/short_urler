@@ -1,0 +1,38 @@
+version: '3.8'
+
+services:
+  tiny:
+    build: .
+    container_name: tinyurl
+    ports:
+      - "8000:8000"
+    depends_on:
+      - postgres
+      - redis
+    networks:
+      - tiny-network
+
+  postgres:
+    image: postgres:14
+    container_name: tinyurl-postgres
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: tinyurl
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    networks:
+      - tiny-network
+
+  redis:
+    image: redis:alpine
+    container_name: tinyurl-redis
+    networks:
+      - tiny-network
+
+volumes:
+  postgres-data:
+
+networks:
+  tiny-network:
+    driver: bridge
